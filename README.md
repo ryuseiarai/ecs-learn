@@ -52,4 +52,32 @@ Internet Gateway
 
 Route Table
 
+|用途|ルートテーブル名|紐付けリソース名|
+|:-|:-|:-|
+|Ingress用|sandbox-routetable01-ingress|sandbox-subnet-public-ingress-1a<br>sandbox-subnet-public-ingress-1c<br>sandbox-subnet-public-ingress-1d
+|アプリケーション用|sandbox-routetable01-app|sandbox-subnet-private-app-1a<br>sandbox-subnet-private-app-1c<br>sandbox-subnet-private-app-1d
+|DB用|sandbox-routetable01-db|sandbox-subnet-private-db-1a<br>sandbox-subnet-private-db-1c<br>sandbox-subnet-private-db-1d
+|Bastion用|sandbox-routetable01-ingress|sandbox-subnet-public-bastion-1a
+
+ルーティングルール
+
+sandbox-routetable01-ingress
+|宛先|ネクストホップ|
+|:-|:-|
+|0.0.0.0/0|sandbox-igw|
+
+sandbox-routetable01-bastion
+|宛先|ネクストホップ|
+|:-|:-|
+|0.0.0.0/0|sandbox-igw|
+
 Security Group
+
+|用途|セキュリティグループ名|
+|:-|:-|
+|Ingress用|sandbox-sg-ingress|
+|フロントエンドアプリ用|sandbox-sg-frontend|
+|内部LB用|sandbox-sg-internal|
+|バックエンドアプリ用|sandbox-sg-backend|
+|DB用|sandbox-sg-db|
+|Bastion用|sandbpx-sg-bastion|

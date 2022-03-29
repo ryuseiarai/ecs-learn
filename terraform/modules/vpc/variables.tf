@@ -17,3 +17,7 @@ variable "route_table" {
 variable "sg" {
   default = {}
 }
+
+variable "prefix_list" {
+  default = {}
+}

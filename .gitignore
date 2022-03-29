@@ -30,3 +30,9 @@ override.tf.json
 
 # Secret file
 secret.*
+
+# backend conf
+# TODO: 作成後削除
+**/tfstate/*
+**/backend.tf
+
