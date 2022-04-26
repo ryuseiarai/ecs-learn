@@ -17,3 +17,7 @@ output "route_table_ids" {
   description = "IDs of Route table."
   value       = { for p in var.route_table : p.group => resource.aws_route_table.route_table[p.group].id }
 }
+
+output "prefix_ids" {
+  value = { for p in var.prefix_list : p.name => aws_ec2_managed_prefix_list.prefix[p.name].id }
+}

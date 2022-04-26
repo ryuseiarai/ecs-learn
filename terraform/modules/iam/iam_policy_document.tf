@@ -14,6 +14,32 @@ data "aws_iam_policy_document" "ec2_assume_policy" {
   }
 }
 
+data "aws_iam_policy_document" "codedeploy_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["codedeploy.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "ecs_assume_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
 # Policy: cloud9 can access ECR
 data "aws_iam_policy_document" "cloud9_ecr_policy" {
   statement {
@@ -56,6 +82,19 @@ data "aws_iam_policy_document" "cloud9_ecr_policy" {
     resources = [
       "${var.ecr_arns["sandbox-frontend"]}",
       "${var.ecr_arns["sandbox-backend"]}",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "secrets_manager" {
+  statement {
+    sid    = "GetSecretForECS"
+    effect = "Allow"
+    actions = [
+      "secretsmanger:GetSecretValue"
+    ]
+    resources = [
+      "*"
     ]
   }
 }

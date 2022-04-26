@@ -31,7 +31,7 @@ resource "aws_security_group_rule" "sg-frontend_ingress_ipv4_http_sg-ingress" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[0].cidr, var.subnet_pri[1].cidr, var.subnet_pri[2].cidr]
+  cidr_blocks       = [var.subnet_pri[0].cidr, var.subnet_pri[1].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[1]}"]
 }
 
@@ -42,7 +42,7 @@ resource "aws_security_group_rule" "sg-internal_ingress_ipv4_http_sg-frontend" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[3].cidr, var.subnet_pri[4].cidr, var.subnet_pri[5].cidr]
+  cidr_blocks       = [var.subnet_pri[2].cidr, var.subnet_pri[3].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[2]}"]
 }
 
@@ -52,7 +52,17 @@ resource "aws_security_group_rule" "sg-internal_ingress_ipv4_http_sg-bastion" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[9].cidr]
+  cidr_blocks       = [var.subnet_pri[6].cidr]
+  security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[2]}"]
+}
+
+resource "aws_security_group_rule" "sg-internal_ingress_ipv4_test_sg-bastion" {
+  type              = "ingress"
+  description       = "Test port for management server."
+  from_port         = 10080
+  to_port           = 10080
+  protocol          = "tcp"
+  cidr_blocks       = [var.subnet_pri[6].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[2]}"]
 }
 
@@ -63,7 +73,7 @@ resource "aws_security_group_rule" "sg-backend_ingress_ipv4_http_sg-internal" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[3].cidr, var.subnet_pri[4].cidr, var.subnet_pri[5].cidr]
+  cidr_blocks       = [var.subnet_pri[2].cidr, var.subnet_pri[3].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[3]}"]
 }
 
@@ -73,7 +83,7 @@ resource "aws_security_group_rule" "sg-backend_ingress_ipv4_http_sg-bastion" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[9].cidr]
+  cidr_blocks       = [var.subnet_pri[6].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[3]}"]
 }
 
@@ -84,7 +94,7 @@ resource "aws_security_group_rule" "sg-db_ingress_ipv4_http_sg-frontend" {
   from_port         = 3306
   to_port           = 3306
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[3].cidr, var.subnet_pri[4].cidr, var.subnet_pri[5].cidr]
+  cidr_blocks       = [var.subnet_pri[2].cidr, var.subnet_pri[3].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[4]}"]
 }
 
@@ -94,7 +104,7 @@ resource "aws_security_group_rule" "sg-db_ingress_ipv4_http_sg-backend" {
   from_port         = 3306
   to_port           = 3306
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[6].cidr, var.subnet_pri[7].cidr, var.subnet_pri[8].cidr]
+  cidr_blocks       = [var.subnet_pri[4].cidr, var.subnet_pri[5].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[4]}"]
 }
 
@@ -104,7 +114,7 @@ resource "aws_security_group_rule" "sg-db_ingress_ipv4_http_sg-bastion" {
   from_port         = 3306
   to_port           = 3306
   protocol          = "tcp"
-  cidr_blocks       = [var.subnet_pri[9].cidr]
+  cidr_blocks       = [var.subnet_pri[6].cidr]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[4]}"]
 }
 
@@ -127,6 +137,17 @@ resource "aws_security_group_rule" "sg-bastion_ingress_ipv6_http_all" {
   protocol          = "tcp"
   ipv6_cidr_blocks  = ["::/0"]
   security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[5]}"]
+}
+
+## egress-sg-ingress
+resource "aws_security_group_rule" "sg-egres_ingress_ipv4_app" {
+  type              = "ingress"
+  description       = "HTTPS for app"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  prefix_list_ids   = [module.vpc_primary.prefix_ids["${var.prefix_list_pri[0].name}"]]
+  security_group_id = module.vpc_primary.sg_ids["${var.sg_pri[6]}"]
 }
 
 # Egress Rule

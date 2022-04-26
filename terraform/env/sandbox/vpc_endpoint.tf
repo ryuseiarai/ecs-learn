@@ -60,3 +60,45 @@ resource "aws_vpc_endpoint" "s3" {
     Name = var.vpc_endpoint_pri.s3.name
   }
 }
+
+# CloudWatch Logs Encdpoint
+data "aws_vpc_endpoint_service" "logs" {
+  service = var.vpc_endpoint_pri.logs.service_name
+}
+
+resource "aws_vpc_endpoint" "logs" {
+  service_name        = data.aws_vpc_endpoint_service.logs.service_name
+  vpc_id              = module.vpc_primary.vpc_id
+  vpc_endpoint_type   = var.vpc_endpoint_pri.logs.type
+  private_dns_enabled = var.vpc_endpoint_pri.logs.dns
+  subnet_ids = [
+    module.vpc_primary.subnet_ids["sandbox-subnet-private-egress-1a"],
+    module.vpc_primary.subnet_ids["sandbox-subnet-private-egress-1c"],
+  ]
+  security_group_ids = [module.vpc_primary.sg_ids["sabdbox-sg-egress"]]
+
+  tags = {
+    Name = var.vpc_endpoint_pri.logs.name
+  }
+}
+
+# SecretsManager
+data "aws_vpc_endpoint_service" "secretsmanager" {
+  service = var.vpc_endpoint_pri.secretsmanager.service_name
+}
+
+resource "aws_vpc_endpoint" "secretsmanager" {
+  service_name        = data.aws_vpc_endpoint_service.secretsmanager.service_name
+  vpc_id              = module.vpc_primary.vpc_id
+  vpc_endpoint_type   = var.vpc_endpoint_pri.secretsmanager.type
+  private_dns_enabled = var.vpc_endpoint_pri.secretsmanager.dns
+  subnet_ids = [
+    module.vpc_primary.subnet_ids["sandbox-subnet-private-egress-1a"],
+    module.vpc_primary.subnet_ids["sandbox-subnet-private-egress-1c"],
+  ]
+  security_group_ids = [module.vpc_primary.sg_ids["sabdbox-sg-egress"]]
+
+  tags = {
+    Name = var.vpc_endpoint_pri.secretsmanager.name
+  }
+}
